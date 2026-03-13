@@ -1,0 +1,11 @@
+[project]
+name = "video-transcriber"
+version = "1.0.0"
+description = "Transcribe video/audio files to markdown using faster-whisper"
+requires-python = ">=3.11"
+dependencies = [
+    "faster-whisper>=1.1.0",
+]
+
+[project.scripts]
+transcribe = "transcriber.cli:main"
