@@ -4,9 +4,10 @@
 # Uses uv to auto-manage the Python environment.
 #
 # Usage:
-#   ./transcribe.sh video.mp4
-#   ./transcribe.sh video.mp4 -m medium -l en
-#   ./transcribe.sh video.mp4 -o output.md --no-timestamps
+#   ./transcribe.sh video.mp4                  # single file
+#   ./transcribe.sh ./lectures/                # all videos in folder
+#   ./transcribe.sh video.mp4 -m small -l en
+#   ./transcribe.sh video.mp4 -o output.md --timestamps
 #
 set -euo pipefail
 
@@ -24,13 +25,13 @@ if ! command -v uv &>/dev/null; then
 fi
 
 if [ $# -eq 0 ]; then
-    echo "Usage: transcribe.sh <video-or-audio-file> [options]"
+    echo "Usage: transcribe.sh <file-or-folder> [options]"
     echo ""
     echo "Options:"
-    echo "  -o, --output FILE        Output markdown file (default: <input>.md)"
-    echo "  -m, --model MODEL        tiny|base|small|medium|large-v3 (default: base)"
+    echo "  -o, --output FILE        Output markdown file (ignored for folders)"
+    echo "  -m, --model MODEL        tiny|base|small|medium|large-v3 (default: medium)"
     echo "  -l, --language LANG      Language code: en, uk, ru, etc. (default: auto)"
-    echo "      --no-timestamps      Omit timestamps from output"
+    echo "      --timestamps         Include timestamps in output"
     exit 1
 fi
 

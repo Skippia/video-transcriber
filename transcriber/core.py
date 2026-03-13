@@ -36,7 +36,13 @@ def format_timestamp(seconds: float) -> str:
     return f"{m:02d}:{s:02d}"
 
 
-def transcribe(input_path: Path, model_size: str = "medium", language: str | None = None, timestamps: bool = False) -> str:
+def load_model(model_size: str = "medium") -> WhisperModel:
+    """Load and return a WhisperModel instance."""
+    print(f"Loading model '{model_size}'...")
+    return WhisperModel(model_size, device="cpu", compute_type="int8")
+
+
+def transcribe(input_path: Path, model_size: str = "medium", language: str | None = None, timestamps: bool = False, model: WhisperModel | None = None) -> str:
     """Transcribe a video/audio file and return markdown content."""
     if input_path.suffix.lower() not in SUPPORTED_EXTENSIONS:
         print(f"Unsupported format: {input_path.suffix}", file=sys.stderr)
@@ -46,8 +52,8 @@ def transcribe(input_path: Path, model_size: str = "medium", language: str | Non
     audio_extensions = {".mp3", ".wav", ".flac", ".ogg", ".m4a"}
     is_audio = input_path.suffix.lower() in audio_extensions
 
-    print(f"Loading model '{model_size}'...")
-    model = WhisperModel(model_size, device="cpu", compute_type="int8")
+    if model is None:
+        model = load_model(model_size)
 
     if is_audio:
         audio_file = str(input_path)
