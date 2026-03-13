@@ -4,7 +4,7 @@ import tempfile
 import time
 from pathlib import Path
 
-from faster_whisper import WhisperModel
+from faster_whisper import BatchedInferencePipeline, WhisperModel
 
 
 SUPPORTED_EXTENSIONS = {".mp4", ".mkv", ".webm", ".avi", ".mov", ".flv", ".wmv", ".mp3", ".wav", ".flac", ".ogg", ".m4a"}
@@ -52,16 +52,17 @@ def print_progress(current: float, total: float, elapsed: float) -> None:
     print(f"\r  ┃{bar}┃ {pct:5.1%}  elapsed {format_timestamp(elapsed)}  eta {eta_str}", end="", flush=True)
 
 
-def load_model(model_size: str = "medium") -> WhisperModel:
-    """Load and return a WhisperModel instance."""
+def load_model(model_size: str = "medium") -> BatchedInferencePipeline:
+    """Load and return a batched inference pipeline."""
     print(f"⏳ Loading model '{model_size}'...", end="", flush=True)
     t = time.monotonic()
     model = WhisperModel(model_size, device="cpu", compute_type="int8")
+    pipeline = BatchedInferencePipeline(model=model)
     print(f" done ({time.monotonic() - t:.1f}s)")
-    return model
+    return pipeline
 
 
-def transcribe(input_path: Path, model_size: str = "medium", language: str | None = None, timestamps: bool = False, model: WhisperModel | None = None) -> str:
+def transcribe(input_path: Path, model_size: str = "medium", language: str | None = None, timestamps: bool = False, model: BatchedInferencePipeline | None = None) -> str:
     """Transcribe a video/audio file and return markdown content."""
     if input_path.suffix.lower() not in SUPPORTED_EXTENSIONS:
         print(f"Unsupported format: {input_path.suffix}", file=sys.stderr)
@@ -89,7 +90,13 @@ def transcribe(input_path: Path, model_size: str = "medium", language: str | Non
     # Step 2: Transcribe with progress
     print("  🔊 Transcribing...")
     t_start = time.monotonic()
-    segments, info = model.transcribe(audio_file, language=language, beam_size=5)
+    segments, info = model.transcribe(
+        audio_file,
+        language=language,
+        batch_size=16,
+        vad_filter=True,
+        vad_parameters={"min_silence_duration_ms": 500},
+    )
     duration = info.duration
 
     paragraphs: list[str] = []
