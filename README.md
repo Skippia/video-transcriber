@@ -1,4 +1,4 @@
-# transcribe-offline
+# MediaScribe
 
 > *Point at a video. Get a markdown transcript.*
 
@@ -8,7 +8,7 @@ Local video/audio transcription to clean markdown files. Pass a file or an entir
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11+-green.svg)](https://www.python.org/)
 [![faster-whisper](https://img.shields.io/badge/Whisper-faster--whisper-orange.svg)](https://github.com/SYSTRAN/faster-whisper)
 
-## Why transcribe-offline?
+## Why MediaScribe?
 
 Uploading videos to Gemini/ChatGPT for transcription is slow, manual, and uncomfortable. This tool does it in one command — point at a file or folder, get `.md` files next to each video. Batch processing, smart paragraph merging, and it remembers what's already been transcribed. Need to process hundreds of files fast? Switch to `--cloud` mode for parallel API-based transcription.
 
@@ -63,7 +63,7 @@ Uploading videos to Gemini/ChatGPT for transcription is slow, manual, and uncomf
 
 ```bash
 # Clone the repo
-git clone https://github.com/Skippia/transcribe-offline.git
+git clone https://github.com/Skippia/mediascribe.git
 cd video-transcriber
 
 # Make globally available
@@ -255,7 +255,7 @@ Folder:
 ## File Structure
 
 ```
-transcribe-offline/
+mediascribe/
 ├── transcribe.sh          # Shell entry point (symlink this to ~/.local/bin/)
 ├── pyproject.toml         # Python project config & dependencies
 ├── transcriber/

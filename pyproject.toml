@@ -1,7 +1,7 @@
 [project]
-name = "transcribe-offline"
+name = "mediascribe"
 version = "1.0.0"
-description = "Transcribe video/audio files to markdown using faster-whisper"
+description = "Transcribe video/audio files to markdown — local (Whisper) or cloud (OpenRouter/Gemini)"
 requires-python = ">=3.11"
 dependencies = [
     "faster-whisper>=1.1.0",
